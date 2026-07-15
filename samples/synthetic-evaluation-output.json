@@ -1,0 +1,9 @@
+{
+  "request_type": "offline_mock_evaluation",
+  "data_source_category": "synthetic_mock",
+  "analysis_status": "completed",
+  "coverage_status": "complete",
+  "validation_result": "passed",
+  "warning_count": 0,
+  "report_generated_at": "2026-07-15T14:00:00Z"
+}

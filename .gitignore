@@ -1,0 +1,22 @@
+# Local secrets and runtime state
+.env
+.env.*
+*.key
+*.pem
+*.log
+*.db
+*.sqlite*
+
+# Local tooling and build output
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+.cache/
+node_modules/
+.next/
+dist/
+build/
+coverage/
+*.tmp
+*.zip

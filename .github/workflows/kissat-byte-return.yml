@@ -1,0 +1,16 @@
+name: Kissat byte return
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  noop:
+    if: false
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo disabled

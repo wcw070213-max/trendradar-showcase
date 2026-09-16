@@ -1,0 +1,5 @@
+  30976 .r45extreme22/r4522.113.g6
+    133 .r45extreme22/r4522.114.g6
+      3 .r45extreme22/r4522.88.g6
+     94 .r45extreme22/r4522.89.g6
+  31206 total

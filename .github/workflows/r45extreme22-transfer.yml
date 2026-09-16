@@ -1,0 +1,52 @@
+name: R45 extreme order22 transfer
+
+on:
+  push:
+    branches:
+      - chatgpt/r45extreme-20260916
+    paths:
+      - .github/workflows/r45extreme22-transfer.yml
+
+permissions:
+  contents: write
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Fetch exact public archive and extract order 22
+        shell: bash
+        run: |
+          set -euo pipefail
+          archive=/tmp/r45extreme.tar.gz
+          curl --fail --location --retry 12 --retry-all-errors --retry-delay 10 \
+            --connect-timeout 30 --max-time 600 \
+            -o "$archive" https://users.cecs.anu.edu.au/~bdm/data/r45extreme.tar.gz
+          test "$(sha256sum "$archive" | awk '{print $1}')" = '9cfac9dbd1c209cfa342e5d5424df2a7a3fbb008ca00bf0a992e5bbe72f925b6'
+          rm -rf .r45extreme22
+          mkdir .r45extreme22
+          tar -tzf "$archive" | grep -E '(^|/)r4522\.[0-9]+\.g6$' | sort > .r45extreme22/MEMBERS.txt
+          test -s .r45extreme22/MEMBERS.txt
+          while IFS= read -r member; do
+            tar -xOzf "$archive" "$member" > ".r45extreme22/$(basename "$member")"
+          done < .r45extreme22/MEMBERS.txt
+          sha256sum .r45extreme22/r4522.*.g6 | sort -k2 > .r45extreme22/SHA256SUMS
+          wc -l .r45extreme22/r4522.*.g6 > .r45extreme22/COUNTS.txt
+          printf 'archive_sha256=%s\n' "$(sha256sum "$archive" | awk '{print $1}')" > .r45extreme22/ARCHIVE_IDENTITY.txt
+          cat .r45extreme22/MEMBERS.txt
+          cat .r45extreme22/COUNTS.txt
+
+      - name: Commit extracted text catalogues to isolated branch
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -f .r45extreme22
+          git commit -m 'chore: temporary R(4,5,22) extreme catalog transfer'
+          git push origin HEAD
